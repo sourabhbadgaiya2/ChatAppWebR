@@ -8,7 +8,7 @@ export const signup = catchAsyncError(async (req, res, next) => {
   const { fullName, username, password, confirmPassword, gender } = req.body;
 
   if (password !== confirmPassword) {
-    return next(new ErrorHandler("Password Don't Match", 400));
+    return next(new ErrorHandler("Password don't match", 400));
   }
 
   const user = await User.findOne({ username });
@@ -37,6 +37,7 @@ export const signup = catchAsyncError(async (req, res, next) => {
   await newUser.save();
 
   res.status(201).json({
+    message: "User created Successfully",
     _id: newUser._id,
     fullName: newUser.fullName,
     username: newUser.username,
@@ -59,8 +60,9 @@ export const login = catchAsyncError(async (req, res, next) => {
   if (!user || !isPasswordCorrect) {
     next(new ErrorHandler("Invalid username or password", 400));
   }
-  generateTokenAndSetCookie(user._id, res);
+  await generateTokenAndSetCookie(user._id, res);
   res.status(200).json({
+    message: "user logged in successfully",
     _id: user._id,
     fullName: user.fullName,
     username: user.username,

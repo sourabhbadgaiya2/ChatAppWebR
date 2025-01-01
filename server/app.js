@@ -11,13 +11,20 @@ import ErrorHandler from "./utils/ErrorHandlers.js";
 import authRoutes from "./routes/userAuth.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import generatedError from "./middlewares/generatedError.js";
+import cors from "cors";
+import { app, server } from "./socket/socket.js";
 
 // Load .env file
 dotenv.config({
   path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "./.env"),
 });
 
-const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 // body parser and middlewares
 app.use(express.json());
@@ -49,7 +56,7 @@ app.use(generatedError);
 
 //!server listen
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   connectDB();
   console.log(`server running on PORT: ${PORT}`);
 });
